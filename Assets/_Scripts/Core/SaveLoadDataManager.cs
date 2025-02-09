@@ -15,8 +15,9 @@ namespace _Scripts.Core
         private GameData _data;
         private FileStreamHandler _fileStreamHandler;
 
-        void Awake()
+        void Start()
         {
+            _fileStreamHandler = new FileStreamHandler(Application.dataPath, SaveProfileName);
             LoadGame();    
         }
 

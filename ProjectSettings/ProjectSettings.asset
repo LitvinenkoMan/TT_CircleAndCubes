@@ -823,8 +823,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: TT_CircleAndCubes
-  metroPackageVersion: 
+  metroPackageName: TTCircleAndCubes
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -832,7 +832,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: TT_CircleAndCubes
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: TT_CircleAndCubes
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -897,7 +897,7 @@ PlayerSettings:
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
   apiCompatibilityLevel: 6
-  activeInputHandler: 2
+  activeInputHandler: 1
   windowsGamepadBackendHint: 0
   cloudProjectId: bc4c5068-05ce-4141-82db-f1c78b059af5
   framebufferDepthMemorylessMode: 0

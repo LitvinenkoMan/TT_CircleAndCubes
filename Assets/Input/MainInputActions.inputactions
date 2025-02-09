@@ -6,13 +6,22 @@
             "id": "71fb0695-763c-4cca-9228-9dd298241548",
             "actions": [
                 {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "15c7f3eb-114c-4557-802e-f7b10f0f9827",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Click",
                     "type": "Button",
                     "id": "3da06b33-08b0-454d-a83c-f2696cbf1f6e",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Hold",
@@ -21,7 +30,7 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Hold",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "HoldRelease",
@@ -30,15 +39,6 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Hold",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Move",
-                    "type": "Value",
-                    "id": "15c7f3eb-114c-4557-802e-f7b10f0f9827",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
                     "initialStateCheck": true
                 }
             ],

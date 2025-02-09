@@ -49,8 +49,13 @@ namespace _Scripts.Core
 
         private void ReturnSquareToPool(IConsumable obj)
         {
-            _pool.AddToPool(obj.GetGameObject());
+            if (obj.GetGameObject().TryGetComponent(out ConsumableSquare squaref))
+            {
+                squaref.OnSquareConsumed -= ReturnSquareToPool;
             _activeAmount--;
+            }
+            _pool.AddToPool(obj.GetGameObject());
+            
         }
     }
 }

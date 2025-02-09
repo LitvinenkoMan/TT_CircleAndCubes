@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using _Scripts.Interfaces;
-using _Scripts.ScriptableObject;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,6 +19,7 @@ namespace _Scripts.Mono
         private CircleCollider2D _collider;
         private Camera _camera;
 
+        private Vector3 _calculatedWorldposition;
         private Vector2 _currentPointerPosition;
         private bool _recordLine;
         private float _distance;
@@ -33,6 +33,12 @@ namespace _Scripts.Mono
             _camera = Camera.main;
             _pointsList = new Queue<Vector2>();
             _collider = GetComponent<CircleCollider2D>();
+            _calculatedWorldposition = transform.position;
+        }
+
+        private void Update()
+        {
+            transform.position = _calculatedWorldposition;
         }
 
         public async void OnClick(InputAction.CallbackContext context)
@@ -43,9 +49,12 @@ namespace _Scripts.Mono
                     _camera.ScreenToWorldPoint(new Vector3(
                         _currentPointerPosition.x,
                         _currentPointerPosition.y,
-                        _camera.gameObject.transform.position.z));              // this method returns position relative from camera
-                                                                                // that means I need to add camera position to start from Vector.zero 
-                if (Vector3.Distance(worldPos, transform.position) < _collider.radius)
+                        -_camera.gameObject.transform.position.z)); // this method returns position relative from camera
+                // that means I need to add camera position to start from Vector.zero 
+
+                if (Vector3.Distance(worldPos,
+                        transform.position) <
+                    _collider.radius)
                 {
                     _cts?.Cancel();
                 }
@@ -76,13 +85,14 @@ namespace _Scripts.Mono
 
         public void OnMove(InputAction.CallbackContext context)
         {
+            _currentPointerPosition = context.ReadValue<Vector2>();
             if (context.performed)
             {
-                _currentPointerPosition = context.ReadValue<Vector2>();
                 if (_recordLine)
                 {
                     var worldPos =
-                        _camera.ScreenToWorldPoint(new Vector3(_currentPointerPosition.x, _currentPointerPosition.y, 0));
+                        _camera.ScreenToWorldPoint(new Vector3(_currentPointerPosition.x, _currentPointerPosition.y, 
+                            -_camera.gameObject.transform.position.z));
                     _pointsList.Enqueue(worldPos);
                 }
             }
@@ -105,12 +115,12 @@ namespace _Scripts.Mono
 
                 float easedT = t * t * (3f - 2f * t);
 
-                transform.position = Vector2.Lerp(startPos, pos, easedT);
+                _calculatedWorldposition = Vector2.Lerp(startPos, pos, easedT);
                 
                 await UniTask.Yield(PlayerLoopTiming.Update, _cts.Token);
             }
 
-            transform.position = pos;
+            _calculatedWorldposition = pos;
         }
 
         public async UniTask MoveAlongTheLine(Queue<Vector2> line, float moveTime)
@@ -124,6 +134,7 @@ namespace _Scripts.Mono
                     return;
                 }
                 await MoveToPosition(line.Dequeue(), moveTime / line.Count);
+                await UniTask.Yield(PlayerLoopTiming.Update, _cts.Token);
             }
         }
     }

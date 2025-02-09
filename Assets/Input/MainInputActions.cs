@@ -28,13 +28,22 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
             ""id"": ""71fb0695-763c-4cca-9228-9dd298241548"",
             ""actions"": [
                 {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""15c7f3eb-114c-4557-802e-f7b10f0f9827"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Click"",
                     ""type"": ""Button"",
                     ""id"": ""3da06b33-08b0-454d-a83c-f2696cbf1f6e"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Hold"",
@@ -43,7 +52,7 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Hold"",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""HoldRelease"",
@@ -52,15 +61,6 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Hold"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""15c7f3eb-114c-4557-802e-f7b10f0f9827"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
                     ""initialStateCheck"": true
                 }
             ],
@@ -166,10 +166,10 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
+        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Click = m_Player.FindAction("Click", throwIfNotFound: true);
         m_Player_Hold = m_Player.FindAction("Hold", throwIfNotFound: true);
         m_Player_HoldRelease = m_Player.FindAction("HoldRelease", throwIfNotFound: true);
-        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
     }
 
     ~@MainInputActions()
@@ -236,18 +236,18 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
+    private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Click;
     private readonly InputAction m_Player_Hold;
     private readonly InputAction m_Player_HoldRelease;
-    private readonly InputAction m_Player_Move;
     public struct PlayerActions
     {
         private @MainInputActions m_Wrapper;
         public PlayerActions(@MainInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Click => m_Wrapper.m_Player_Click;
         public InputAction @Hold => m_Wrapper.m_Player_Hold;
         public InputAction @HoldRelease => m_Wrapper.m_Player_HoldRelease;
-        public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -257,6 +257,9 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
             @Click.started += instance.OnClick;
             @Click.performed += instance.OnClick;
             @Click.canceled += instance.OnClick;
@@ -266,13 +269,13 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
             @HoldRelease.started += instance.OnHoldRelease;
             @HoldRelease.performed += instance.OnHoldRelease;
             @HoldRelease.canceled += instance.OnHoldRelease;
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
         {
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
             @Click.started -= instance.OnClick;
             @Click.performed -= instance.OnClick;
             @Click.canceled -= instance.OnClick;
@@ -282,9 +285,6 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
             @HoldRelease.started -= instance.OnHoldRelease;
             @HoldRelease.performed -= instance.OnHoldRelease;
             @HoldRelease.canceled -= instance.OnHoldRelease;
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -313,9 +313,9 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
     }
     public interface IPlayerActions
     {
+        void OnMove(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
         void OnHold(InputAction.CallbackContext context);
         void OnHoldRelease(InputAction.CallbackContext context);
-        void OnMove(InputAction.CallbackContext context);
     }
 }
