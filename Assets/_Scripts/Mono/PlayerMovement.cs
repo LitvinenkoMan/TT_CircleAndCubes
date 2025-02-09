@@ -13,28 +13,30 @@ namespace _Scripts.Mono
         [SerializeField] private float HoldMovementTime;
 
         private CancellationTokenSource _cts;
-        private List<Vector2> _touches;
         private MainInputActions _input;
+        private List<Vector2> _touches;
+        private Camera _camera;
 
+        private Vector2 _currentPointerPosition;
         private bool _recordLine;
+        private float _distance;
 
         void Start()
         {
             _input = new MainInputActions();
             _input.Enable();
             _input.Player.SetCallbacks(this);
+
+            _camera = Camera.main;
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        }
-
-        public void OnClick(InputAction.CallbackContext context)
+        public async void OnClick(InputAction.CallbackContext context)
         {
             if (context.performed)
             {
-
+                var worldPos =
+                    _camera.ScreenToWorldPoint(new Vector3(_currentPointerPosition.x, _currentPointerPosition.y, 0));
+                await MoveToPosition(worldPos, SingleTapMovementTime);
                 Debug.Log("Performed Click");
             }
         }
@@ -43,7 +45,6 @@ namespace _Scripts.Mono
         {
             if (context.performed)
             {
-
                 Debug.Log("Performed Hold");
             }
         }
@@ -60,13 +61,33 @@ namespace _Scripts.Mono
         {
             if (context.performed)
             {
-                Debug.Log("Performed Move");
+                _currentPointerPosition = context.ReadValue<Vector2>();
             }
         }
 
-        public UniTask MoveToPosition(Vector2 pos, float moveTime)
+        public async UniTask MoveToPosition(Vector2 pos, float moveTime)
         {
-            return UniTask.CompletedTask;
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            
+            Vector2 startPos = transform.position;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < moveTime)
+            {
+                if (_cts.Token.IsCancellationRequested) return;
+
+                elapsedTime += Time.deltaTime;
+                float t = elapsedTime / moveTime;
+
+                float easedT = t * t * (3f - 2f * t);
+
+                transform.position = Vector2.Lerp(startPos, pos, easedT);
+                
+                await UniTask.Yield(PlayerLoopTiming.Update, _cts.Token);
+            }
+
+            transform.position = pos;
         }
 
         public UniTask MoveAlongTheLine(List<Vector2> line, float moveTime)
