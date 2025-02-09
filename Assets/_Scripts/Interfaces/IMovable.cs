@@ -7,6 +7,6 @@ namespace _Scripts.Interfaces
     public interface IMovable
     {
         UniTask MoveToPosition(Vector2 pos, float moveTime);
-        UniTask MoveAlongTheLine(List<Vector2> line, float moveTime);
+        UniTask MoveAlongTheLine(Queue<Vector2> line, float moveTime);
     }
 }

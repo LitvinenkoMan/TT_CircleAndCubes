@@ -16,7 +16,7 @@ namespace _Scripts.Mono
 
         private CancellationTokenSource _cts;
         private MainInputActions _input;
-        private List<Vector2> _touches;
+        private Queue<Vector2> _pointsList;
         private Camera _camera;
 
         private Vector2 _currentPointerPosition;
@@ -30,6 +30,7 @@ namespace _Scripts.Mono
             _input.Player.SetCallbacks(this);
 
             _camera = Camera.main;
+            _pointsList = new Queue<Vector2>();
         }
 
         public async void OnClick(InputAction.CallbackContext context)
@@ -48,14 +49,17 @@ namespace _Scripts.Mono
             if (context.performed)
             {
                 Debug.Log("Performed Hold");
+                _recordLine = true;
             }
         }
 
-        public void OnHoldRelease(InputAction.CallbackContext context)
+        public async void OnHoldRelease(InputAction.CallbackContext context)
         {
-            if (context.performed)
+            if (context.performed && _recordLine)
             {
                 Debug.Log("Performed HoldRelease");
+                _recordLine = false;
+                await MoveAlongTheLine(_pointsList, HoldMovementTime);
             }
         }
 
@@ -64,6 +68,12 @@ namespace _Scripts.Mono
             if (context.performed)
             {
                 _currentPointerPosition = context.ReadValue<Vector2>();
+                if (_recordLine)
+                {
+                    var worldPos =
+                        _camera.ScreenToWorldPoint(new Vector3(_currentPointerPosition.x, _currentPointerPosition.y, 0));
+                    _pointsList.Enqueue(worldPos);
+                }
             }
         }
 
@@ -92,9 +102,14 @@ namespace _Scripts.Mono
             transform.position = pos;
         }
 
-        public UniTask MoveAlongTheLine(List<Vector2> line, float moveTime)
+        public async UniTask MoveAlongTheLine(Queue<Vector2> line, float moveTime)
         {
-            return UniTask.CompletedTask;
+            // just using the same method, but with Queue
+            while (line.Count > 0)
+            {
+                if (_cts.Token.IsCancellationRequested) return;
+                await MoveToPosition(line.Dequeue(), moveTime / line.Count);
+            }
         }
     }
 }

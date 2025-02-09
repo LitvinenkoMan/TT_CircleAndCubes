@@ -36,12 +36,6 @@ namespace _Scripts.UI
             VisualizePlayerDistance(playerValues.Distance);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
-
         public void VisualizePlayerScore(int score)
         {
             ScoreText.text = score.ToString();
