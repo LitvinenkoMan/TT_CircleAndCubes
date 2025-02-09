@@ -29,29 +29,38 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Click"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""3da06b33-08b0-454d-a83c-f2696cbf1f6e"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": ""Press"",
-                    ""initialStateCheck"": true
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Hold"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""dfbcfb1d-1626-472e-9e44-1267cb1b17d0"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": ""Hold,Press"",
-                    ""initialStateCheck"": true
+                    ""interactions"": ""Hold"",
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""HoldRelease"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""68f28167-f355-485b-baee-def1d71e05ed"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""15c7f3eb-114c-4557-802e-f7b10f0f9827"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
-                    ""interactions"": ""Hold,Press(behavior=1)"",
+                    ""interactions"": """",
                     ""initialStateCheck"": true
                 }
             ],
@@ -59,10 +68,21 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""52edd782-6e54-420d-a7ea-0817e177b579"",
-                    ""path"": """",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Default"",
+                    ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ebbc1f50-2fa5-44f2-ab20-17a5b307b45c"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Default"",
                     ""action"": ""Click"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -70,10 +90,21 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""bb650f38-f3e0-4199-9307-e514e9bd6574"",
-                    ""path"": """",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Default"",
+                    ""action"": ""Hold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""49c85700-324d-40fb-9466-c373dd725db7"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Default"",
                     ""action"": ""Hold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -81,11 +112,44 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3c9f3302-3827-4c36-94de-a2aecc68feac"",
-                    ""path"": """",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": "";Default"",
+                    ""action"": ""HoldRelease"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""00eb5060-882a-47f2-93f4-f4f0cae72576"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": "";Default"",
+                    ""action"": ""HoldRelease"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fd82d67d-ab44-4d48-b692-fefac3840593"",
+                    ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""HoldRelease"",
+                    ""groups"": "";Default"",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a51d2d90-9b71-4e69-9eed-282979ff85c9"",
+                    ""path"": ""<Touchscreen>/primaryTouch/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Default"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -105,6 +169,7 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
         m_Player_Click = m_Player.FindAction("Click", throwIfNotFound: true);
         m_Player_Hold = m_Player.FindAction("Hold", throwIfNotFound: true);
         m_Player_HoldRelease = m_Player.FindAction("HoldRelease", throwIfNotFound: true);
+        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
     }
 
     ~@MainInputActions()
@@ -174,6 +239,7 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Click;
     private readonly InputAction m_Player_Hold;
     private readonly InputAction m_Player_HoldRelease;
+    private readonly InputAction m_Player_Move;
     public struct PlayerActions
     {
         private @MainInputActions m_Wrapper;
@@ -181,6 +247,7 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
         public InputAction @Click => m_Wrapper.m_Player_Click;
         public InputAction @Hold => m_Wrapper.m_Player_Hold;
         public InputAction @HoldRelease => m_Wrapper.m_Player_HoldRelease;
+        public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -199,6 +266,9 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
             @HoldRelease.started += instance.OnHoldRelease;
             @HoldRelease.performed += instance.OnHoldRelease;
             @HoldRelease.canceled += instance.OnHoldRelease;
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -212,6 +282,9 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
             @HoldRelease.started -= instance.OnHoldRelease;
             @HoldRelease.performed -= instance.OnHoldRelease;
             @HoldRelease.canceled -= instance.OnHoldRelease;
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -243,5 +316,6 @@ public partial class @MainInputActions: IInputActionCollection2, IDisposable
         void OnClick(InputAction.CallbackContext context);
         void OnHold(InputAction.CallbackContext context);
         void OnHoldRelease(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
     }
 }
