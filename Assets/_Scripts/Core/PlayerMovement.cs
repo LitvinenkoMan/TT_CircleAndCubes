@@ -17,6 +17,7 @@ namespace _Scripts.Mono
         private CancellationTokenSource _cts;
         private MainInputActions _input;
         private Queue<Vector2> _pointsList;
+        private CircleCollider2D _collider;
         private Camera _camera;
 
         private Vector2 _currentPointerPosition;
@@ -31,6 +32,7 @@ namespace _Scripts.Mono
 
             _camera = Camera.main;
             _pointsList = new Queue<Vector2>();
+            _collider = GetComponent<CircleCollider2D>();
         }
 
         public async void OnClick(InputAction.CallbackContext context)
@@ -38,8 +40,17 @@ namespace _Scripts.Mono
             if (context.performed)
             {
                 var worldPos =
-                    _camera.ScreenToWorldPoint(new Vector3(_currentPointerPosition.x, _currentPointerPosition.y, 0));
-                await MoveToPosition(worldPos, SingleTapMovementTime);
+                    _camera.ScreenToWorldPoint(new Vector3(
+                        _currentPointerPosition.x,
+                        _currentPointerPosition.y,
+                        _camera.gameObject.transform.position.z));              // this method returns position relative from camera
+                                                                                // that means I need to add camera position to start from Vector.zero 
+                if (Vector3.Distance(worldPos, transform.position) < _collider.radius)
+                {
+                    _cts?.Cancel();
+                }
+                else await MoveToPosition(worldPos, SingleTapMovementTime);
+                
                 Debug.Log("Performed Click");
             }
         }
@@ -107,7 +118,11 @@ namespace _Scripts.Mono
             // just using the same method, but with Queue
             while (line.Count > 0)
             {
-                if (_cts.Token.IsCancellationRequested) return;
+                if (_cts.Token.IsCancellationRequested)
+                {
+                    line.Clear();
+                    return;
+                }
                 await MoveToPosition(line.Dequeue(), moveTime / line.Count);
             }
         }
