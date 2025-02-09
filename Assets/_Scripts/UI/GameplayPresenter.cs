@@ -25,8 +25,8 @@ namespace _Scripts.UI
 
         private void OnDisable()
         {
-            playerValues.OnDistanceChanged += VisualizePlayerDistance;
-            playerValues.OnScoreChanged += VisualizePlayerScore;
+            playerValues.OnDistanceChanged -= VisualizePlayerDistance;
+            playerValues.OnScoreChanged -= VisualizePlayerScore;
         }
 
 
